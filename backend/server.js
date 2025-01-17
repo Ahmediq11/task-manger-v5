@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, "../frontend/public")));
 
 // MongoDB Connection
 mongoose
@@ -55,7 +55,9 @@ app.post("/api/register", async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: "Username or email already exists" });
+      return res
+        .status(400)
+        .json({ message: "Username or email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -77,7 +79,7 @@ app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-    
+
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -116,7 +118,7 @@ app.post("/api/tasks", authenticateToken, async (req, res) => {
   try {
     const { title } = req.body;
     const taskCount = await Task.countDocuments({ userId: req.user.userId });
-    
+
     if (taskCount >= 10) {
       return res.status(400).json({ message: "Task limit reached (max 10)" });
     }
@@ -146,7 +148,9 @@ app.patch("/api/tasks/:id", authenticateToken, async (req, res) => {
     );
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Task not found or unauthorized" });
     }
 
     res.json({ message: "Task updated" });
@@ -163,7 +167,9 @@ app.delete("/api/tasks/:id", authenticateToken, async (req, res) => {
     });
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Task not found or unauthorized" });
     }
 
     res.json({ message: "Task deleted" });
@@ -173,9 +179,13 @@ app.delete("/api/tasks/:id", authenticateToken, async (req, res) => {
 });
 
 // Serve index.html for root route
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/public/index.html"));
 });
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
