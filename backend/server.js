@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "../frontend/public")));
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(process.mongodb+srv://ahmedhazm41:0000@cluster0.lui15.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
